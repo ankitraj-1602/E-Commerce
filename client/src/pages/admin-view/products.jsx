@@ -1,5 +1,5 @@
 function AdminProducts() {
-    return <div>admin features</div>;
+    return <div>admin products</div>;
   }
   
   export default AdminProducts;
