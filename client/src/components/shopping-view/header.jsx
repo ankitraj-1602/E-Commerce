@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { logoutUser } from "@/store/auth-slice";
+import { logoutUser, resetTokenandCredential } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
@@ -71,8 +71,14 @@ function HeaderRightContent() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // function handleLogout() {
+  //   dispatch(logoutUser());
+  // }
+
   function handleLogout() {
-    dispatch(logoutUser());
+    dispatch(resetTokenandCredential());
+    sessionStorage.clear();
+    navigate('/auth/login')
   }
 
   useEffect(() => {
