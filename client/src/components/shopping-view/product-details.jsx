@@ -12,14 +12,18 @@ import { Label } from "../ui/label";
 import StarRatingComponent from "../common/star-rating";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
+import { getAllOrdersByUserId } from "@/store/shop/order-slice";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
   const [rating, setRating] = useState(0);
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const [hasPurchased, setHasPurchased] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
+  const { orderList } = useSelector((state) => state.shopOrder); 
 
   const { toast } = useToast();
 
@@ -95,6 +99,22 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   useEffect(() => {
     if (productDetails !== null) dispatch(getReviews(productDetails?._id));
   }, [productDetails]);
+
+  useEffect(() => {
+    if (productDetails !== null) {
+        const userReview = reviews.find(review => review.userId === user?.id);
+        setHasReviewed(!!userReview); 
+        dispatch(getAllOrdersByUserId(user?.id))
+
+        const userOrder = orderList.find(order => 
+          order.userId === user?.id && 
+          order.cartItems.some(product => product.productId === productDetails._id)
+        );
+        setHasPurchased(!!userOrder);
+        console.log(orderList,'orderList')
+        
+    }
+  }, [productDetails,reviews]);
 
   console.log(reviews, "reviews");
 
@@ -193,6 +213,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 <h1>No Reviews</h1>
               )}
             </div>
+            {hasPurchased && !hasReviewed && ( // Only show this section if the user hasn't reviewed
             <div className="mt-10 flex-col flex gap-2">
               <Label>Write a review</Label>
               <div className="flex gap-1">
@@ -214,6 +235,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 Submit
               </Button>
             </div>
+          )}
           </div>
         </div>
       </DialogContent>

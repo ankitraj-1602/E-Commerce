@@ -1,6 +1,7 @@
 import ProductImageUpload from "@/components/admin-view/image-upload";
 import { Button } from "@/components/ui/button";
-import { addFeatureImage, getFeatureImages } from "@/store/common-slice";
+import { toast } from "@/components/ui/use-toast";
+import { addFeatureImage, deleteFeatureImage, getFeatureImages } from "@/store/common-slice";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -19,8 +20,22 @@ function AdminDashboard() {
         dispatch(getFeatureImages());
         setImageFile(null);
         setUploadedImageUrl("");
+        toast({
+          title:"Feature image added successfully"
+        })
       }
     });
+  }
+
+  function handleDeleteFeatureImage(id){
+    dispatch(deleteFeatureImage(id)).then((data)=>{
+      if(data?.payload?.success){
+        dispatch(getFeatureImages())
+        toast({
+          title:data?.payload?.message
+        })
+      }
+    })
   }
 
   useEffect(() => {
@@ -52,8 +67,13 @@ function AdminDashboard() {
                   src={featureImgItem.image}
                   className="w-full h-[300px] object-cover rounded-t-lg"
                 />
+                <Button onClick={()=>handleDeleteFeatureImage(featureImgItem._id)} className='mt-5 w-full'>
+                    Delete
+                </Button>
               </div>
+              
             ))
+            
           : null}
       </div>
     </div>

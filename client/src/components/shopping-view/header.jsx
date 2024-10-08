@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
 
-function MenuItems() {
+function MenuItems({ setOpenMenuSheet }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,6 +47,7 @@ function MenuItems() {
           new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
         )
       : navigate(getCurrentMenuItem.path);
+      setOpenMenuSheet(false);
   }
 
   return (
@@ -139,6 +140,7 @@ function HeaderRightContent() {
 
 function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const [openMenuSheet, setOpenMenuSheet] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -147,7 +149,7 @@ function ShoppingHeader() {
           <HousePlug className="h-6 w-6" />
           <span className="font-bold">Ecommerce</span>
         </Link>
-        <Sheet>
+        <Sheet open={openMenuSheet} onOpenChange={setOpenMenuSheet}>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
               <Menu className="h-6 w-6" />
@@ -155,8 +157,9 @@ function ShoppingHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs">
-            <MenuItems />
+            <MenuItems setOpenMenuSheet={setOpenMenuSheet}/>
             <HeaderRightContent />
+            
           </SheetContent>
         </Sheet>
         <div className="hidden lg:block">
