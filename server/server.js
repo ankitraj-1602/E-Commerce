@@ -40,6 +40,10 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("Welcome to the API!");
+});
+
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/auth", authRouter);
