@@ -65,7 +65,7 @@ function MenuItems({ setOpenMenuSheet }) {
   );
 }
 
-function HeaderRightContent() {
+function HeaderRightContent({setOpenMenuSheet}) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const [openCartSheet, setOpenCartSheet] = useState(false);
@@ -79,7 +79,8 @@ function HeaderRightContent() {
   function handleLogout() {
     dispatch(resetTokenandCredential());
     sessionStorage.clear();
-    navigate('/auth/login')
+    setOpenMenuSheet(false)
+    navigate('/shop/home')
   }
 
   useEffect(() => {
@@ -141,6 +142,7 @@ function HeaderRightContent() {
 function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [openMenuSheet, setOpenMenuSheet] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -158,7 +160,17 @@ function ShoppingHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs">
             <MenuItems setOpenMenuSheet={setOpenMenuSheet}/>
-            <HeaderRightContent />
+            {isAuthenticated ? (
+              <HeaderRightContent setOpenMenuSheet={setOpenMenuSheet}/>
+            ) : (
+              <Button
+                variant="outline"
+                onClick={() => navigate("/auth/login")}
+                className="mt-4"
+              >
+                Login
+              </Button>
+            )}
             
           </SheetContent>
         </Sheet>
@@ -167,7 +179,13 @@ function ShoppingHeader() {
         </div>
 
         <div className="hidden lg:block">
-          <HeaderRightContent />
+        {isAuthenticated ? (
+            <HeaderRightContent />
+          ) : (
+            <Button variant="outline" onClick={() => navigate("/auth/login")}>
+              Login
+            </Button>
+          )}
         </div>
       </div>
     </header>

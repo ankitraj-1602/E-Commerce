@@ -15,7 +15,7 @@ function AdminHeader({ setOpen }) {
   function handleLogout() {
     dispatch(resetTokenandCredential());
     sessionStorage.clear();
-    navigate('/auth/login')
+    navigate('/shop/home')
   }
 
   return (

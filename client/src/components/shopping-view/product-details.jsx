@@ -13,6 +13,7 @@ import StarRatingComponent from "../common/star-rating";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
 import { getAllOrdersByUserId } from "@/store/shop/order-slice";
+import { useNavigate } from "react-router-dom";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
@@ -20,12 +21,13 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [hasReviewed, setHasReviewed] = useState(false);
   const [hasPurchased, setHasPurchased] = useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { user,isAuthenticated } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
   const { orderList } = useSelector((state) => state.shopOrder); 
 
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   function handleRatingChange(getRating) {
     console.log(getRating, "getRating");
@@ -34,6 +36,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   }
 
   function handleAddToCart(getCurrentProductId, getTotalStock) {
+    if(!isAuthenticated){
+      navigate('/auth/login')
+      return;
+    }
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
