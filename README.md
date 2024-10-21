@@ -1,4 +1,5 @@
 E-Commerce MERN Application
+
 This is a full-stack e-commerce web application built using the MERN stack (MongoDB, Express.js, React.js, and Node.js). The app allows users to browse products, add items to the cart, make purchases using PayPal, and upload product images via Cloudinary.
 
 Features
